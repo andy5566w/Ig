@@ -1,7 +1,5 @@
-<script setup>
-import TheIcon from './components/TheIcon.vue';
-</script>
+<script setup></script>
 
-<template>test <the-icon icon="home"></the-icon></template>
-
-<style></style>
+<template>
+  <router-view />
+</template>

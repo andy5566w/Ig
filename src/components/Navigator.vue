@@ -15,12 +15,7 @@
       <button><the-icon icon="publish" /></button>
 
       <div class="profileDropDown">
-        <img
-          src="../assets/avatarDefault.png"
-          width="42"
-          height="42"
-          alt="defaultAvatar"
-        />
+        <the-avatar :width="42" :height="42" />
         <div class="dropdownMenu">
           <ul class="profileMenu">
             <li>
@@ -35,6 +30,7 @@
 </template>
 <script setup>
 import TheIcon from './TheIcon.vue';
+import TheAvatar from './TheAvatar.vue';
 </script>
 
 <style scoped lang="scss">

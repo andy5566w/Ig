@@ -3,4 +3,9 @@ import './style.css';
 import App from './App.vue';
 import router from './route/routes.js';
 
-createApp(App).use(router).mount('#app');
+const app = createApp(App);
+app.config.errorHandler = (err, vm, info) => {
+  console.log({ err, vm, info });
+};
+app.use(router);
+app.mount('#app');

@@ -1,5 +1,5 @@
 <template>
-  <TheModal @close="store.commit('changeShowPostUpload', false)">
+  <TheModal @close="store.commit('post/CHANGE_SHOW_POPUP', false)">
     <div class="postUpload">
       <label class="upload">
         <img
@@ -41,12 +41,9 @@ const image = ref(null);
 const description = ref('');
 
 async function handleImageUpload(e) {
-  // 暂时只允许上传一张图片
   const imageFile = e.target.files[0];
   if (imageFile) {
-    // 设置预览
     imageObjUrl.value = URL.createObjectURL(imageFile);
-    // 设置图片文件
     image.value = imageFile;
   }
 }

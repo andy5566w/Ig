@@ -12,7 +12,7 @@
         <the-icon icon="home" />
       </router-link>
 
-      <button><the-icon icon="publish" /></button>
+      <button @click="handleShowPopup"><the-icon icon="publish" /></button>
 
       <div class="profileDropDown">
         <the-avatar :width="42" :height="42" />
@@ -33,12 +33,18 @@ import TheIcon from './TheIcon.vue';
 import TheAvatar from './TheAvatar.vue';
 import { logout } from '@/apis/auth.js';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 const router = useRouter();
+const store = useStore();
 
 const handleLogout = async () => {
   await logout();
   await router.push('/login');
+};
+
+const handleShowPopup = () => {
+  store.commit('post/CHANGE_SHOW_POPUP', true);
 };
 </script>
 

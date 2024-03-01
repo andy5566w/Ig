@@ -21,7 +21,7 @@
             <li>
               <router-link to="/profile">personal page</router-link>
             </li>
-            <li>exit</li>
+            <li @click="handleLogout">exit</li>
           </ul>
         </div>
       </div>
@@ -31,6 +31,15 @@
 <script setup>
 import TheIcon from './TheIcon.vue';
 import TheAvatar from './TheAvatar.vue';
+import { logout } from '@/apis/auth.js';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const handleLogout = async () => {
+  await logout();
+  await router.push('/login');
+};
 </script>
 
 <style scoped lang="scss">

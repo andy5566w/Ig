@@ -5,16 +5,29 @@
       <img src="../assets/logo.svg" alt="" />
       <form @submit.prevent id="form">
         <input type="email" placeholder="type your email..." v-model="email" />
-        <input type="password" placeholder="password" v-model="password" />
         <input
-          v-if="!isLogin"
           type="password"
           placeholder="password"
-          v-model="confirmPassword"
+          :class="{
+            invalid: !isLogin && !isPassWordValid,
+          }"
+          v-model="password"
         />
+        <template v-if="!isLogin">
+          <input
+            type="password"
+            :class="{ invalid: !isPassWordValid }"
+            placeholder="password"
+            v-model="confirmPassword"
+          />
+          <p v-if="!isPassWordValid && !isPassWordValid" class="warning">
+            your password is not equal to confirmed password
+          </p>
+        </template>
         <button
           type="submit"
           class="loginButton"
+          :disabled="!isLogin && !isPassWordValid"
           @click="isLogin ? login() : register()"
         >
           {{ isLogin ? 'login' : 'signup' }}
@@ -31,7 +44,7 @@
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
@@ -56,6 +69,14 @@ async function register() {
     await router.replace('/');
   }
 }
+
+const isPassWordValid = computed(() => {
+  return (
+    password.value === '' ||
+    confirmPassword.value === '' ||
+    password.value === confirmPassword.value
+  );
+});
 
 async function login() {
   const { ok } = await store.dispatch('user/signIn', {
@@ -111,7 +132,10 @@ async function login() {
 input {
   background: #fafafa;
   border-radius: 4px;
-  border: none;
+  border: transparent 1px solid;
+  &.invalid {
+    border-color: #ef4444;
+  }
 }
 
 input::placeholder {
@@ -136,5 +160,11 @@ input::placeholder {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.warning {
+  color: #ef4444;
+  font-weight: bold;
+  font-size: 14px;
 }
 </style>

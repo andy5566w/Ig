@@ -5,13 +5,13 @@
       <img src="../assets/logo.svg" alt="" />
       <form @submit.prevent id="form">
         <input type="email" placeholder="type your email..." v-model="email" />
+        <input type="password" placeholder="password" v-model="password" />
         <input
           v-if="!isLogin"
-          type="text"
-          placeholder="account"
-          v-model="username"
+          type="password"
+          placeholder="password"
+          v-model="confirmPassword"
         />
-        <input type="password" placeholder="password" v-model="password" />
         <button
           type="submit"
           class="loginButton"
@@ -33,25 +33,38 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+
 const isLogin = ref(true);
-
 const email = ref('');
-const username = ref('');
 const password = ref('');
+const confirmPassword = ref('');
 const agreementChecked = ref(false);
-
 const router = useRouter();
+const store = useStore();
 
 async function register() {
   if (!agreementChecked.value) {
     alert('you need to check regular before you sign up');
     return;
   }
-  await router.replace('/');
+  const { ok } = await store.dispatch('user/createAccount', {
+    email: email.value,
+    password: password.value,
+  });
+  if (ok) {
+    await router.replace('/');
+  }
 }
 
 async function login() {
-  await router.replace('/');
+  const { ok } = await store.dispatch('user/signIn', {
+    email: email.value,
+    password: password.value,
+  });
+  if (ok) {
+    await router.replace('/');
+  }
 }
 </script>
 <style scoped lang="scss">

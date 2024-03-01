@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import store from '@/store/index.js';
 
 export const getJwtToken = () => localStorage.getItem('jwt_token');
 export const setJwtToken = (token) => localStorage.setItem('jwt_token', token);
@@ -19,3 +20,11 @@ const firebaseApp = initializeApp(firebaseConfig);
 export const db = getFirestore(firebaseApp);
 
 export const auth = getAuth(firebaseApp);
+
+export const logout = async () => {
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth, (userCredential) => {
+  store.commit('user/MUTATION_USER', userCredential);
+});

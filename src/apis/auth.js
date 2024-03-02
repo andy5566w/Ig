@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 import store from '@/store/index.js';
 import router from '@/route/routes.js';
 
@@ -22,13 +23,14 @@ export const db = getFirestore(firebaseApp);
 
 export const auth = getAuth(firebaseApp);
 
+export const storage = getStorage(firebaseApp);
+
 export const logout = async () => {
   await signOut(auth);
 };
 
 onAuthStateChanged(auth, (userCredential) => {
   store.commit('user/MUTATION_USER', userCredential?.reloadUserInfo);
-  console.log(userCredential);
   if (!userCredential) {
     router.push({ name: 'login' });
   }

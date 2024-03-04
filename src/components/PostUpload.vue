@@ -48,8 +48,8 @@ async function handleImageUpload(e) {
   }
 }
 function publishPost() {
-  store.dispatch('uploadPost', {
-    image: image.value,
+  store.dispatch('post/uploadPost', {
+    file: image.value,
     description: description.value,
   });
 }

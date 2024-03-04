@@ -1,10 +1,11 @@
 import { db, auth, storage } from '@/apis/auth.js';
-import { doc, getDoc } from 'firebase/firestore';
+import store from '@/store/index.js';
+import { doc, getDoc, addDoc, collection } from 'firebase/firestore';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
-import { getDownloadURL, listAll, ref } from 'firebase/storage';
+import { getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage';
 export async function testFirebase(collectionName, id) {
   const docRef = doc(db, collectionName, id);
   return await getDoc(docRef);
@@ -59,4 +60,26 @@ export const createAccountWithEmailAndPassword = async (email, password) => {
     }
     return { ok: false, errorMessage: err.message };
   }
+};
+
+export const uploadImage = async (file) => {
+  const fileName = `${file.name.split('.')[0]}${Math.random().toString(16).slice(2)}.${file.name.split('.')[1]}`;
+  const storageRef = ref(storage, 'images/' + fileName);
+  await uploadBytes(storageRef, file);
+  return fileName;
+};
+
+export const addPostIntoFirebase = async ({
+  imageName = 'this is for test',
+  description,
+}) => {
+  const docPayload = {
+    imageName,
+    description,
+    author: store.state.user.userInfo.uid,
+    likes: [],
+    comments: [],
+  };
+  const targetCollection = collection(db, 'posts');
+  await addDoc(targetCollection, docPayload);
 };

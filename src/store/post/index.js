@@ -1,4 +1,9 @@
-import { addPostIntoFirebase, uploadImage } from '@/apis/firebase.js';
+import {
+  addPostIntoFirebase,
+  uploadImage,
+  getAllDocFromCollection,
+  getSinglePostById,
+} from '@/apis/firebase.js';
 import Swal from 'sweetalert2';
 
 export const post = {
@@ -6,6 +11,7 @@ export const post = {
   state() {
     return {
       showPopup: false,
+      posts: [],
     };
   },
   mutations: {
@@ -14,10 +20,15 @@ export const post = {
     },
   },
   actions: {
-    async uploadPost({ commit }, { file, description }) {
+    async fetchAllPosts() {
+      await getAllDocFromCollection('posts');
+    },
+    async uploadPost({ commit, state }, { file, description }) {
       Swal.showLoading();
       const imageName = await uploadImage(file);
-      await addPostIntoFirebase({ imageName, description });
+      const docRef = await addPostIntoFirebase({ imageName, description });
+      const post = await getSinglePostById(docRef.id);
+      state.posts.unshift(post);
       commit('CHANGE_SHOW_POPUP', false);
       Swal.close();
     },

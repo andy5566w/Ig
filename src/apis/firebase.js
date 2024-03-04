@@ -1,6 +1,13 @@
 import { auth, db, storage } from '@/apis/auth.js';
 import store from '@/store/index.js';
-import { addDoc, collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  Timestamp,
+} from 'firebase/firestore';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -83,6 +90,7 @@ export const addPostIntoFirebase = async ({
     author: store.state.user.userInfo.uid,
     likes: [],
     comments: [],
+    publishedAt: Timestamp.fromDate(new Date()),
   };
   const targetCollection = collection(db, 'posts');
   return await addDoc(targetCollection, docPayload);

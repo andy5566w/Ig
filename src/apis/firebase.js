@@ -107,7 +107,12 @@ export const getSinglePostById = async (id) => {
 
 export const getAllDocFromCollection = async (collectionName) => {
   const querySnapshot = await getDocs(collection(db, collectionName));
-  querySnapshot.forEach((doc) => {
-    console.log(doc.id, doc.data());
+  const posts = querySnapshot.docs.map((doc) => {
+    return {
+      ...doc.data(),
+      id: doc.id,
+    };
   });
+  store.commit('post/MUTATION_POSTS', posts);
+  return posts;
 };

@@ -1,4 +1,8 @@
-import { signIn, createAccountWithEmailAndPassword } from '@/apis/firebase.js';
+import {
+  signIn,
+  createAccountWithEmailAndPassword,
+  addUser,
+} from '@/apis/firebase.js';
 import Swal from 'sweetalert2';
 
 export const user = {
@@ -30,6 +34,11 @@ export const user = {
         data: user,
         errorMessage,
       } = await createAccountWithEmailAndPassword(email, password);
+      await addUser({
+        id: user.user.uid,
+        email: user.user.email,
+        name: user.user.displayName,
+      });
       if (!ok) {
         Swal.fire({
           icon: 'error',

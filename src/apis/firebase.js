@@ -116,3 +116,27 @@ export const getAllDocFromCollection = async (collectionName) => {
   store.commit('post/MUTATION_POSTS', posts);
   return posts;
 };
+
+// For user
+export const addUser = async ({ id, name, email }) => {
+  const docPayload = {
+    id,
+    email,
+    name: name || email.split('@')[0],
+    avatar: 'default-avatar.jpeg',
+    startAt: Timestamp.fromDate(new Date()),
+  };
+  console.log({ docPayload });
+  const targetCollection = collection(db, 'users');
+  return await addDoc(targetCollection, docPayload);
+};
+
+export const getUserById = async (id) => {
+  const docRef = doc(db, 'users', id);
+  const userSnap = await getDoc(docRef);
+  if (!userSnap.exists()) {
+    console.log('no document at all');
+    return;
+  }
+  return userSnap.data();
+};

@@ -5,28 +5,28 @@
       @click="emit('likeClick')"
       :fill="likedByMe ? '#FF3C3C' : 'none'"
       :stroke="likedByMe ? '#FF3C3C' : '#000000'"
-    /><span>{{ likes || '' }}</span>
+    /><span>{{ likes.length }}</span>
     <TheIcon
       icon="comment"
       @click="emit('commentsClick')"
       fill="none"
       stroke="#000000"
-    /><span>{{ comments || '' }}</span>
+    /><span>{{ comments.length }}</span>
     <TheIcon
       icon="favorite"
       @click="emit('favorClick')"
       :fill="favoredByMe ? '#FFD12E' : 'none'"
       :stroke="favoredByMe ? '#FFD12E' : '#000000'"
-    /><span>{{ favors || '' }}</span>
+    /><span>{{ favors.length }}</span>
   </div>
 </template>
 <script setup>
 import TheIcon from './TheIcon.vue';
 
 defineProps({
-  likes: Number,
-  comments: Number,
-  favors: Number,
+  likes: Array,
+  comments: Array,
+  favors: Array,
   likedByMe: Boolean,
   favoredByMe: Boolean,
 });

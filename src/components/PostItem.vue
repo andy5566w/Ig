@@ -15,16 +15,13 @@
         <span class="postPubDate">{{
           dateToRelative(publishedAt?.seconds * 1000)
         }}</span>
-        <!--        <PostActions-->
-        <!--          :likes="post.liked_bies"-->
-        <!--          :comments="post.comments"-->
-        <!--          :favors="post.favored_bies"-->
-        <!--          :likedByMe="post.likedByMe"-->
-        <!--          :favoredByMe="post.favoredByMe"-->
-        <!--          @likeClick="$store.dispatch('toggleLike', post.id)"-->
-        <!--          @favorClick="$store.dispatch('toggleFavor', post.id)"-->
-        <!--          @commentsClick="this.$store.dispatch('showPostDetails', post.id)"-->
-        <!--        />-->
+        <PostActions
+          :likes="props.likes"
+          :comments="props.comments"
+          :favors="props.favors"
+          :likedByMe="likedByMe"
+          :favoredByMe="favoredByMe"
+        />
       </div>
       <div class="postDesc">
         <p>
@@ -38,28 +35,29 @@
 import TheAvatar from '../components/TheAvatar.vue';
 import PostActions from '../components/PostActions.vue';
 import { dateToRelative } from '../utils/date';
-import { watch, ref } from 'vue';
+import { watch, ref, computed } from 'vue';
 import { getImageByName, getUserById } from '@/apis/firebase.js';
+import { useStore } from 'vuex';
 
 const imageUrl = ref('');
 const author = ref({});
 const store = useStore();
 const props = defineProps({
-  imageName: {
-    type: String,
-    required: true,
-  },
-  author: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-  },
-  publishedAt: {
-    type: Object,
-    default: {},
-  },
+  imageName: String,
+  author: String,
+  description: String,
+  publishedAt: Object,
+  likes: Array,
+  comments: Array,
+  favors: Array,
+});
+
+const likedByMe = computed(() => {
+  return props.likes.includes(store.state.user?.userInfo?.uid);
+});
+
+const favoredByMe = computed(() => {
+  return props.favors.includes(store.state.user?.userInfo?.uid);
 });
 
 watch(

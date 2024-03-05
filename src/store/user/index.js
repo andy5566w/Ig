@@ -1,7 +1,8 @@
 import {
   signIn,
   createAccountWithEmailAndPassword,
-  addUser,
+  addUserIntoFirebase,
+  updateUser,
 } from '@/apis/firebase.js';
 import Swal from 'sweetalert2';
 
@@ -34,7 +35,7 @@ export const user = {
         data: user,
         errorMessage,
       } = await createAccountWithEmailAndPassword(email, password);
-      await addUser({
+      await addUserIntoFirebase({
         id: user.user.uid,
         email: user.user.email,
         name: user.user.displayName,

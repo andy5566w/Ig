@@ -2,6 +2,7 @@ import { auth, db, storage } from '@/apis/auth.js';
 import store from '@/store/index.js';
 import {
   addDoc,
+  setDoc,
   collection,
   doc,
   getDoc,
@@ -118,7 +119,7 @@ export const getAllDocFromCollection = async (collectionName) => {
 };
 
 // For user
-export const addUser = async ({ id, name, email }) => {
+export const addUserIntoFirebase = async ({ id, name, email }) => {
   const docPayload = {
     id,
     email,
@@ -126,9 +127,8 @@ export const addUser = async ({ id, name, email }) => {
     avatar: 'default-avatar.jpeg',
     startAt: Timestamp.fromDate(new Date()),
   };
-  console.log({ docPayload });
-  const targetCollection = collection(db, 'users');
-  return await addDoc(targetCollection, docPayload);
+  const docRef = doc(db, 'users', id);
+  return await setDoc(docRef, docPayload);
 };
 
 export const getUserById = async (id) => {

@@ -10,8 +10,8 @@
     />
     <div class="postInfo">
       <div class="postMeta">
-        <TheAvatar :src="user?.avatarUrl" />
-        <span>{{ user?.name }}</span>
+        <TheAvatar :src="author?.avatarUrl" />
+        <span>{{ author?.name }}</span>
         <span class="postPubDate">{{
           dateToRelative(publishedAt?.seconds * 1000)
         }}</span>
@@ -42,7 +42,8 @@ import { watch, ref } from 'vue';
 import { getImageByName, getUserById } from '@/apis/firebase.js';
 
 const imageUrl = ref('');
-const user = ref({});
+const author = ref({});
+const store = useStore();
 const props = defineProps({
   imageName: {
     type: String,
@@ -72,11 +73,10 @@ watch(
 
 watch(
   () => props.author,
-  async (userId) => {
-    user.value = await getUserById(userId);
-    if (user.value.avatar) {
-      console.log(user.value.avatar);
-      user.value.avatarUrl = await getImageByName(user.value.avatar);
+  async (authorId) => {
+    author.value = await getUserById(authorId);
+    if (author.value.avatar) {
+      author.value.avatarUrl = await getImageByName(author.value.avatar);
     }
   },
   { immediate: true },

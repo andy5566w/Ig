@@ -1,8 +1,8 @@
 <template>
   <div class="postItem">
+    <!--    @click="$store.dispatch('showPostDetails', post.id)"-->
     <img
-      :src="post.image"
-      @click="$store.dispatch('showPostDetails', post.id)"
+      :src="imageUrl"
       alt=""
       width="100%"
       height="100%"
@@ -10,23 +10,25 @@
     />
     <div class="postInfo">
       <div class="postMeta">
-        <TheAvatar :src="post?.user?.avatar" />
-        <span>{{ post?.user?.name }}</span>
-        <span class="postPubDate">{{ dateToRelative(post.publishedAt) }}</span>
-        <PostActions
-          :likes="post.liked_bies"
-          :comments="post.comments"
-          :favors="post.favored_bies"
-          :likedByMe="post.likedByMe"
-          :favoredByMe="post.favoredByMe"
-          @likeClick="$store.dispatch('toggleLike', post.id)"
-          @favorClick="$store.dispatch('toggleFavor', post.id)"
-          @commentsClick="this.$store.dispatch('showPostDetails', post.id)"
-        />
+        <TheAvatar :src="user?.avatarUrl" />
+        <span>{{ user?.name }}</span>
+        <span class="postPubDate">{{
+          dateToRelative(publishedAt?.seconds * 1000)
+        }}</span>
+        <!--        <PostActions-->
+        <!--          :likes="post.liked_bies"-->
+        <!--          :comments="post.comments"-->
+        <!--          :favors="post.favored_bies"-->
+        <!--          :likedByMe="post.likedByMe"-->
+        <!--          :favoredByMe="post.favoredByMe"-->
+        <!--          @likeClick="$store.dispatch('toggleLike', post.id)"-->
+        <!--          @favorClick="$store.dispatch('toggleFavor', post.id)"-->
+        <!--          @commentsClick="this.$store.dispatch('showPostDetails', post.id)"-->
+        <!--        />-->
       </div>
       <div class="postDesc">
         <p>
-          {{ post.description }}
+          {{ description }}
         </p>
       </div>
     </div>
@@ -36,13 +38,49 @@
 import TheAvatar from '../components/TheAvatar.vue';
 import PostActions from '../components/PostActions.vue';
 import { dateToRelative } from '../utils/date';
+import { watch, ref } from 'vue';
+import { getImageByName, getUserById } from '@/apis/firebase.js';
 
-defineProps({
-  post: {
+const imageUrl = ref('');
+const user = ref({});
+const props = defineProps({
+  imageName: {
+    type: String,
+    required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+  publishedAt: {
     type: Object,
     default: {},
   },
 });
+
+watch(
+  () => props.imageName,
+  async (imageName) => {
+    if (!imageName) return;
+    imageUrl.value = await getImageByName(imageName);
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.author,
+  async (userId) => {
+    user.value = await getUserById(userId);
+    if (user.value.avatar) {
+      console.log(user.value.avatar);
+      user.value.avatarUrl = await getImageByName(user.value.avatar);
+    }
+  },
+  { immediate: true },
+);
 </script>
 <style scoped lang="scss">
 .postItem {

@@ -3,7 +3,11 @@ import {
   createAccountWithEmailAndPassword,
   addUserIntoFirebase,
   updateUser,
+  getUserById,
+  updatePost,
+  getSinglePostById,
 } from '@/apis/firebase.js';
+import { auth } from '@/apis/auth.js';
 import Swal from 'sweetalert2';
 
 export const user = {
@@ -47,6 +51,27 @@ export const user = {
         });
       }
       return { ok, data: user, errorMessage };
+    },
+    async likePost({ dispatch }, { postId }) {
+      const user = await getUserById(auth.currentUser.uid);
+      const post = await getSinglePostById(postId);
+      const userIndex = user.likes.findIndex((id) => id === postId);
+      const postIndex = post.likes.findIndex((id) => id === user.id);
+      const isAlreadyLiked = userIndex !== -1 && postIndex !== -1;
+      if (isAlreadyLiked) {
+        user.likes.splice(userIndex, 1);
+        post.likes.splice(postIndex, 1);
+      } else {
+        user.likes.push(postId);
+        post.likes.push(user.id);
+      }
+      const promises = [updateUser(user), updatePost({ ...post, id: postId })];
+      dispatch(
+        'post/togglePostLike',
+        { postId, likes: post.likes },
+        { root: true },
+      );
+      await Promise.all(promises);
     },
   },
 };

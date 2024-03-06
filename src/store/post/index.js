@@ -18,6 +18,19 @@ export const post = {
     CHANGE_SHOW_POPUP(state, isShow) {
       state.showPopup = isShow;
     },
+    MUTATION_POSTS(state, posts) {
+      state.posts = posts;
+    },
+    MUTATION_POST(state, { key, value, postId }) {
+      const postIndex = state.posts.findIndex((post) => post.id === postId);
+      if (postIndex !== -1) {
+        const post = state.posts[postIndex];
+        state.posts.splice(postIndex, 1, {
+          ...post,
+          [key]: value,
+        });
+      }
+    },
   },
   actions: {
     async fetchAllPosts() {
@@ -31,6 +44,12 @@ export const post = {
       state.posts.unshift(post);
       commit('CHANGE_SHOW_POPUP', false);
       Swal.close();
+    },
+    togglePostLike({ commit }, { postId, likes }) {
+      if (!postId) {
+        return;
+      }
+      commit('MUTATION_POST', { postId, key: 'likes', value: likes });
     },
   },
 };

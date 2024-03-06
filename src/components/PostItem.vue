@@ -21,6 +21,7 @@
           :favors="props.favors"
           :likedByMe="likedByMe"
           :favoredByMe="favoredByMe"
+          @like-click="$store.dispatch('user/likePost', { postId: id })"
         />
       </div>
       <div class="postDesc">
@@ -50,6 +51,7 @@ const props = defineProps({
   likes: Array,
   comments: Array,
   favors: Array,
+  id: String,
 });
 
 const likedByMe = computed(() => {

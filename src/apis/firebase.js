@@ -118,6 +118,11 @@ export const getAllDocFromCollection = async (collectionName) => {
   return posts;
 };
 
+export const updatePost = async (data) => {
+  const docRef = doc(db, 'posts', data.id);
+  await setDoc(docRef, data);
+};
+
 // For user
 export const addUserIntoFirebase = async ({ id, name, email }) => {
   const docPayload = {
@@ -141,4 +146,9 @@ export const getUserById = async (id) => {
     return;
   }
   return userSnap.data();
+};
+
+export const updateUser = async (data) => {
+  const docRef = doc(db, 'users', auth.currentUser.uid);
+  await setDoc(docRef, data);
 };

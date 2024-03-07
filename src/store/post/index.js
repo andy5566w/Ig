@@ -11,6 +11,8 @@ export const post = {
   state() {
     return {
       showPopup: false,
+      showPostDetails: false,
+      currentId: null,
       posts: [],
     };
   },
@@ -31,6 +33,16 @@ export const post = {
         });
       }
     },
+    SHOW_POST_DETAILS(state, show) {
+      state.showPostDetails = show;
+    },
+    MUTATION_CURRENT_ID(state, id) {
+      state.currentId = id;
+    },
+  },
+  getters: {
+    getters_current_post: (state) =>
+      state.posts.find(({ id }) => id === state.currentId),
   },
   actions: {
     async fetchAllPosts() {
@@ -44,6 +56,14 @@ export const post = {
       state.posts.unshift(post);
       commit('CHANGE_SHOW_POPUP', false);
       Swal.close();
+    },
+    showPostDetails({ commit }, postId) {
+      commit('SHOW_POST_DETAILS', true);
+      commit('MUTATION_CURRENT_ID', postId);
+    },
+    hidePostDetails({ commit }) {
+      commit('SHOW_POST_DETAILS', false);
+      commit('MUTATION_CURRENT_ID', null);
     },
     togglePostLike({ commit }, { postId, likes }) {
       if (!postId) {

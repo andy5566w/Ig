@@ -1,10 +1,10 @@
 <template>
-  <TheModal @close="$store.dispatch('hidePostDetails')">
+  <TheModal @close="$store.dispatch('post/hidePostDetails')">
     <div class="postDetails">
-      <img class="postImage" :src="post.image" alt="" />
+      <img class="postImage" :src="postImageUrl" alt="postImage" />
       <div class="postMeta">
         <div class="author">
-          <TheAvatar :src="post.user?.avatar" />
+          <TheAvatar :src="authorAvatarUrl" />
           <span>{{ post.user?.name }}</span>
         </div>
         <pre class="postDesc"
@@ -12,27 +12,29 @@
           </pre
         >
         <div class="comments">
-          <div class="comment" v-for="comment in comments">
-            <TheAvatar :src="comment.user?.avatar" />
-            <span class="user">{{ comment.user?.name }}</span>
-            <span class="commentDate">{{
-              dateToRelative(comment.pubDate)
-            }}</span>
-            <p class="commentContent">{{ comment.content }}</p>
-          </div>
+          <!--          <div class="comment" v-for="comment in comments">-->
+          <!--            <TheAvatar :src="avatarUrl" />-->
+          <!--            <span class="user">{{ comment.user?.name }}</span>-->
+          <!--            <span class="commentDate">{{-->
+          <!--              dateToRelative(comment.pubDate)-->
+          <!--            }}</span>-->
+          <!--            <p class="commentContent">{{ comment.content }}</p>-->
+          <!--          </div>-->
         </div>
         <div class="actions">
           <PostActions
-            :likes="post.liked_bies"
+            :likes="post.likes"
             :comments="post.comments"
-            :favors="post.favored_bies"
-            @likeClick="store.dispatch('toggleLike', post.id)"
-            @favorClick="store.dispatch('toggleFavor', post.id)"
-            :likedByMe="post.likedByMe"
-            :favoredByMe="post.favoredByMe"
+            :favors="post.favors"
+            :likedByMe="likedByMe"
+            :favoredByMe="favoredByMe"
+            @likeClick="$store.dispatch('user/likePost', { postId: post.id })"
+            @favorClick="
+              $store.dispatch('user/addToFavors', { postId: post.id })
+            "
           />
           <span class="postPubDate">{{
-            dateToRelative(post.publishedAt)
+            dateToRelative(post.publishedAt.seconds * 1000)
           }}</span>
           <input
             type="text"
@@ -40,7 +42,7 @@
             v-model="content"
             id=""
             class="commentInput"
-            placeholder="写一条评论吧！"
+            placeholder="leave some comment..."
           />
           <button
             @click="
@@ -51,7 +53,7 @@
             "
             class="commentPubBtn"
           >
-            发布
+            published
           </button>
         </div>
       </div>
@@ -63,14 +65,29 @@ import TheAvatar from './TheAvatar.vue';
 import PostActions from './PostActions.vue';
 import TheModal from './TheModal.vue';
 import { useStore } from 'vuex';
-import { computed, ref } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import { dateToRelative } from '../utils/date';
+import { getImageByName, getUserById } from '@/apis/firebase.js';
 
 const content = ref('');
-
 const store = useStore();
-const post = computed(() => store.getters.postDetails);
-const comments = computed(() => store.state.comment.list);
+const authorAvatarUrl = ref('');
+const postImageUrl = ref('');
+const author = ref('');
+const post = computed(() => store.getters['post/getters_current_post']);
+const likedByMe = computed(() => {
+  return post.value.likes.includes(store.state.user?.userInfo?.uid);
+});
+const favoredByMe = computed(() => {
+  return post.value.favors.includes(store.state.user?.userInfo?.uid);
+});
+// const comments = computed(() => store.state.comment.list);
+
+onMounted(async () => {
+  postImageUrl.value = await getImageByName(post.value.imageName);
+  author.value = await getUserById(post.value.author);
+  authorAvatarUrl.value = await getImageByName(author.value.avatar);
+});
 </script>
 <style scoped>
 .postDetails {

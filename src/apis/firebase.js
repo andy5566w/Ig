@@ -8,6 +8,8 @@ import {
   getDoc,
   getDocs,
   Timestamp,
+  query,
+  where,
 } from 'firebase/firestore';
 import {
   signInWithEmailAndPassword,
@@ -103,7 +105,7 @@ export const getSinglePostById = async (id) => {
   return postSnap.data();
 };
 
-export const getAllDocFromCollection = async (collectionName) => {
+export const getAllPostsFromCollection = async (collectionName) => {
   const querySnapshot = await getDocs(collection(db, collectionName));
   const posts = querySnapshot.docs.map((doc) => {
     return {
@@ -151,12 +153,20 @@ export const updateUser = async (data) => {
 };
 
 // for comment
-export const addCommentIntoFirebase = async ({ comment }) => {
+export const addCommentIntoFirebase = async ({ comment, postId }) => {
   const docPayload = {
     comment,
+    postId,
     author: store.state.user.userInfo.uid,
     publishedAt: Timestamp.fromDate(new Date()),
   };
   const targetCollection = collection(db, 'comments');
   return await addDoc(targetCollection, docPayload);
+};
+
+export const getAllCommentsByPostId = async (postId) => {
+  const targetCollection = collection(db, 'comments');
+  const q = query(targetCollection, where('postId', '==', postId));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs;
 };

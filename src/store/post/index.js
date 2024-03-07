@@ -1,7 +1,7 @@
 import {
   addPostIntoFirebase,
   uploadImage,
-  getAllDocFromCollection,
+  getAllPostsFromCollection,
   getSinglePostById,
 } from '@/apis/firebase.js';
 import Swal from 'sweetalert2';
@@ -46,7 +46,7 @@ export const post = {
   },
   actions: {
     async fetchAllPosts() {
-      await getAllDocFromCollection('posts');
+      await getAllPostsFromCollection('posts');
     },
     async uploadPost({ commit, state }, { file, description }) {
       Swal.showLoading();

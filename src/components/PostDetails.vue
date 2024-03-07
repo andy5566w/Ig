@@ -12,14 +12,11 @@
           </pre
         >
         <div class="comments">
-          <!--          <div class="comment" v-for="comment in comments">-->
-          <!--            <TheAvatar :src="avatarUrl" />-->
-          <!--            <span class="user">{{ comment.user?.name }}</span>-->
-          <!--            <span class="commentDate">{{-->
-          <!--              dateToRelative(comment.pubDate)-->
-          <!--            }}</span>-->
-          <!--            <p class="commentContent">{{ comment.content }}</p>-->
-          <!--          </div>-->
+          <comment
+            v-for="(comment, index) in comments"
+            v-bind="comment"
+            :key="index"
+          />
         </div>
         <div class="actions">
           <PostActions
@@ -54,6 +51,7 @@
 import TheAvatar from './TheAvatar.vue';
 import PostActions from './PostActions.vue';
 import TheModal from './TheModal.vue';
+import Comment from '@/components/Comment.vue';
 import { useStore } from 'vuex';
 import { computed, ref, watch, onMounted } from 'vue';
 import { dateToRelative } from '../utils/date';
@@ -71,9 +69,10 @@ const likedByMe = computed(() => {
 const favoredByMe = computed(() => {
   return post.value.favors.includes(store.state.user?.userInfo?.uid);
 });
-// const comments = computed(() => store.state.comment.list);
+const comments = computed(() => store.state.comment.comments);
 
 onMounted(async () => {
+  store.dispatch('comment/getAllComments', post.value.id);
   postImageUrl.value = await getImageByName(post.value.imageName);
   author.value = await getUserById(post.value.author);
   authorAvatarUrl.value = await getImageByName(author.value.avatar);
@@ -82,6 +81,7 @@ onMounted(async () => {
 const handleSentComment = () => {
   store.dispatch('comment/addComment', {
     comment: content.value,
+    postId: post.value.id,
   });
   content.value = '';
 };
@@ -127,24 +127,6 @@ const handleSentComment = () => {
   align-items: start;
   overflow-y: auto;
   height: 100%;
-}
-.comment {
-  display: grid;
-  grid-template-areas:
-    'avatar name date'
-    'comment comment comment';
-  grid-template-columns: 34px 1fr 1fr;
-  align-items: center;
-  column-gap: 10px;
-  row-gap: 14px;
-}
-.commentDate {
-  grid-area: date;
-  justify-self: end;
-  color: #a7a7a7;
-}
-.commentContent {
-  grid-area: comment;
 }
 
 .actions {

@@ -164,6 +164,15 @@ export const addCommentIntoFirebase = async ({ comment, postId }) => {
   return await addDoc(targetCollection, docPayload);
 };
 
+export const getSingleComment = async (commentId) => {
+  const commentSnap = await getDoc(doc(db, 'comments', commentId));
+  if (!commentSnap.exists()) {
+    console.log('no document at all');
+    return;
+  }
+  return commentSnap.data();
+};
+
 export const getAllCommentsByPostId = async (postId) => {
   const targetCollection = collection(db, 'comments');
   const q = query(targetCollection, where('postId', '==', postId));

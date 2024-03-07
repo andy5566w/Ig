@@ -73,5 +73,26 @@ export const user = {
       );
       await Promise.all(promises);
     },
+    async addToFavors({ dispatch }, { postId }) {
+      const user = await getUserById(auth.currentUser.uid);
+      const post = await getSinglePostById(postId);
+      const userIndex = user.favors.findIndex((id) => id === postId);
+      const postIndex = post.favors.findIndex((id) => id === user.id);
+      const isAlreadyLiked = userIndex !== -1 && postIndex !== -1;
+      if (isAlreadyLiked) {
+        user.favors.splice(userIndex, 1);
+        post.favors.splice(postIndex, 1);
+      } else {
+        user.favors.push(postId);
+        post.favors.push(user.id);
+      }
+      const promises = [updateUser(user), updatePost({ ...post, id: postId })];
+      dispatch(
+        'post/togglePostFavor',
+        { postId, favors: post.favors },
+        { root: true },
+      );
+      await Promise.all(promises);
+    },
   },
 };

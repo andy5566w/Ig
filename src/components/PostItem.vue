@@ -22,6 +22,7 @@
           :likedByMe="likedByMe"
           :favoredByMe="favoredByMe"
           @like-click="$store.dispatch('user/likePost', { postId: id })"
+          @favor-click="$store.dispatch('user/addToFavors', { postId: id })"
         />
       </div>
       <div class="postDesc">

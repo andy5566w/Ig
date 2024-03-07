@@ -51,5 +51,11 @@ export const post = {
       }
       commit('MUTATION_POST', { postId, key: 'likes', value: likes });
     },
+    togglePostFavor({ commit }, { postId, favors }) {
+      if (!postId) {
+        return;
+      }
+      commit('MUTATION_POST', { postId, key: 'favors', value: favors });
+    },
   },
 };

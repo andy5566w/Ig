@@ -81,10 +81,7 @@ export const uploadImage = async (file) => {
 };
 
 // For post
-export const addPostIntoFirebase = async ({
-  imageName = 'this is for test',
-  description,
-}) => {
+export const addPostIntoFirebase = async ({ imageName, description }) => {
   const docPayload = {
     imageName,
     description,
@@ -151,4 +148,15 @@ export const getUserById = async (id) => {
 export const updateUser = async (data) => {
   const docRef = doc(db, 'users', auth.currentUser.uid);
   await setDoc(docRef, data);
+};
+
+// for comment
+export const addCommentIntoFirebase = async ({ comment }) => {
+  const docPayload = {
+    comment,
+    author: store.state.user.userInfo.uid,
+    publishedAt: Timestamp.fromDate(new Date()),
+  };
+  const targetCollection = collection(db, 'comments');
+  return await addDoc(targetCollection, docPayload);
 };

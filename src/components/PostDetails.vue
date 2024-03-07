@@ -44,17 +44,7 @@
             class="commentInput"
             placeholder="leave some comment..."
           />
-          <button
-            @click="
-              store.dispatch('addComment', {
-                content,
-                postId: post.id,
-              })
-            "
-            class="commentPubBtn"
-          >
-            published
-          </button>
+          <button @click="handleSentComment" class="commentPubBtn">sent</button>
         </div>
       </div>
     </div>
@@ -88,6 +78,13 @@ onMounted(async () => {
   author.value = await getUserById(post.value.author);
   authorAvatarUrl.value = await getImageByName(author.value.avatar);
 });
+
+const handleSentComment = () => {
+  store.dispatch('comment/addComment', {
+    comment: content.value,
+  });
+  content.value = '';
+};
 </script>
 <style scoped>
 .postDetails {
@@ -170,13 +167,12 @@ onMounted(async () => {
   font-size: 14px;
 }
 .commentInput {
-  background: #f7f7f7;
+  background: #ccc;
   border-radius: 16px;
   border: none;
   grid-column: 1 / 4;
 }
 .commentInput::placeholder {
-  color: #b9b9b9;
   border: none;
 }
 .commentPubBtn {

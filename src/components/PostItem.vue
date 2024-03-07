@@ -1,11 +1,11 @@
 <template>
   <div class="postItem">
-    <!--    @click="$store.dispatch('showPostDetails', post.id)"-->
     <img
       :src="imageUrl"
       alt=""
       width="100%"
       height="100%"
+      @click="$store.dispatch('post/showPostDetails', id)"
       style="background: #eee"
     />
     <div class="postInfo">

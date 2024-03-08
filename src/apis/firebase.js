@@ -89,11 +89,14 @@ export const addPostIntoFirebase = async ({ imageName, description }) => {
     description,
     author: store.state.user.userInfo.uid,
     likes: [],
+    favors: [],
     comments: [],
     publishedAt: Timestamp.fromDate(new Date()),
+    id: Math.random().toString(16).slice(2),
   };
-  const targetCollection = collection(db, 'posts');
-  return await addDoc(targetCollection, docPayload);
+  const docRef = doc(db, 'posts', docPayload.id);
+  await setDoc(docRef, docPayload);
+  return docPayload;
 };
 
 export const getSinglePostById = async (id) => {

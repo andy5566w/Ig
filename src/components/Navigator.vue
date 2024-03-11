@@ -15,7 +15,7 @@
       <button @click="handleShowPopup"><the-icon icon="publish" /></button>
 
       <div class="profileDropDown">
-        <the-avatar :width="42" :height="42" />
+        <the-avatar :width="42" :height="42" :src="user?.avatar" />
         <div class="dropdownMenu">
           <ul class="profileMenu">
             <li>
@@ -34,9 +34,25 @@ import TheAvatar from './TheAvatar.vue';
 import { logout } from '@/apis/auth.js';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import { ref, watch } from 'vue';
+import { getUserById } from '@/apis/firebase.js';
 
 const router = useRouter();
 const store = useStore();
+const user = ref({});
+
+watch(
+  () => store.state.user.userInfo,
+  (userInfo) => {
+    if (userInfo.uid) {
+      handleGetUser(userInfo.uid);
+    }
+  },
+);
+
+const handleGetUser = async (userId) => {
+  user.value = await getUserById(userId);
+};
 
 const handleLogout = async () => {
   await logout();

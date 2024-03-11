@@ -2,6 +2,7 @@ import {
   addCommentIntoFirebase,
   getAllCommentsByPostId,
   getSingleComment,
+  updatePost,
 } from '@/apis/firebase.js';
 
 export const comment = {
@@ -17,7 +18,7 @@ export const comment = {
     },
   },
   actions: {
-    async addComment({ state }, { comment, postId }) {
+    async addComment({ state, rootState }, { comment, postId }) {
       if (!comment || !postId) {
         return;
       }
@@ -25,6 +26,9 @@ export const comment = {
         comment,
         postId,
       });
+      const post = rootState.post.posts.find(({ id }) => id === postId);
+      post.comments.push(commentId);
+      await updatePost(post);
       const newComment = await getSingleComment(commentId);
       state.comments.push(newComment);
     },

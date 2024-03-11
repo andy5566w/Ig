@@ -69,7 +69,12 @@ const likedByMe = computed(() => {
 const favoredByMe = computed(() => {
   return post.value.favors.includes(store.state.user?.userInfo?.uid);
 });
-const comments = computed(() => store.state.comment.comments);
+const comments = computed(() =>
+  store.state.comment.comments.sort(
+    (a, b) => a.publishedAt.seconds - b.publishedAt.seconds,
+  ),
+);
+console.log({ comments });
 
 onMounted(async () => {
   store.dispatch('comment/getAllComments', post.value.id);

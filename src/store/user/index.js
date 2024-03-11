@@ -52,8 +52,9 @@ export const user = {
       }
       return { ok, data: user, errorMessage };
     },
-    async likePost({ dispatch }, { postId }) {
-      const user = await getUserById(auth.currentUser.uid);
+    async likePost({ dispatch, rootState }, { postId }) {
+      const userId = rootState.user.userInfo.uid;
+      const user = await getUserById(userId);
       const post = await getSinglePostById(postId);
       const userIndex = user.likes.findIndex((id) => id === postId);
       const postIndex = post.likes.findIndex((id) => id === user.id);
@@ -73,8 +74,9 @@ export const user = {
       );
       await Promise.all(promises);
     },
-    async addToFavors({ dispatch }, { postId }) {
-      const user = await getUserById(auth.currentUser.uid);
+    async addToFavors({ dispatch, rootState }, { postId }) {
+      const userId = rootState.user.userInfo.uid;
+      const user = await getUserById(userId);
       const post = await getSinglePostById(postId);
       const userIndex = user.favors.findIndex((id) => id === postId);
       const postIndex = post.favors.findIndex((id) => id === user.id);

@@ -7,7 +7,6 @@ import {
   updatePost,
   getSinglePostById,
 } from '@/apis/firebase.js';
-import { auth } from '@/apis/auth.js';
 import Swal from 'sweetalert2';
 
 export const user = {
@@ -15,11 +14,15 @@ export const user = {
   state() {
     return {
       userInfo: null,
+      userDoc: {},
     };
   },
   mutations: {
     MUTATION_USER(state, userInfo) {
       state.userInfo = userInfo;
+    },
+    MUTATION_USER_DOC(state, userDoc) {
+      state.userDoc = userDoc;
     },
   },
   actions: {
@@ -52,9 +55,12 @@ export const user = {
       }
       return { ok, data: user, errorMessage };
     },
-    async likePost({ dispatch, rootState }, { postId }) {
-      const userId = rootState.user.userInfo.uid;
+    async getUserByUserId({ commit }, userId) {
       const user = await getUserById(userId);
+      commit('MUTATION_USER_DOC', user);
+    },
+    async likePost({ dispatch, rootState, state }, { postId }) {
+      const user = state.userDoc;
       const post = await getSinglePostById(postId);
       const userIndex = user.likes.findIndex((id) => id === postId);
       const postIndex = post.likes.findIndex((id) => id === user.id);
@@ -74,9 +80,8 @@ export const user = {
       );
       await Promise.all(promises);
     },
-    async addToFavors({ dispatch, rootState }, { postId }) {
-      const userId = rootState.user.userInfo.uid;
-      const user = await getUserById(userId);
+    async addToFavors({ dispatch, rootState, state }, { postId }) {
+      const user = state.userDoc;
       const post = await getSinglePostById(postId);
       const userIndex = user.favors.findIndex((id) => id === postId);
       const postIndex = post.favors.findIndex((id) => id === user.id);

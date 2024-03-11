@@ -28,6 +28,7 @@ export const storage = getStorage(firebaseApp);
 export const logout = async () => {
   await signOut(auth);
   store.commit('user/MUTATION_USER', null);
+  store.commit('user/MUTATION_USER_DOC', null);
 };
 
 onAuthStateChanged(auth, (userCredential) => {

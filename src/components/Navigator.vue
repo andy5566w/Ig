@@ -52,6 +52,7 @@ watch(
 
 const handleGetUser = async (userId) => {
   user.value = await getUserById(userId);
+  store.dispatch('user/getUserByUserId', userId);
 };
 
 const handleLogout = async () => {

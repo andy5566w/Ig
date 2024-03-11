@@ -165,8 +165,9 @@ export const addCommentIntoFirebase = async ({ comment, postId }) => {
     author: store.state.user.userInfo.uid,
     publishedAt: Timestamp.fromDate(new Date()),
   };
-  const targetCollection = collection(db, 'comments');
-  return await addDoc(targetCollection, docPayload);
+  const docRef = doc(db, 'comments', docPayload.id);
+  await setDoc(docRef, docPayload);
+  return docPayload;
 };
 
 export const getSingleComment = async (commentId) => {

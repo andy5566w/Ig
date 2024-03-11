@@ -53,7 +53,7 @@ import PostActions from './PostActions.vue';
 import TheModal from './TheModal.vue';
 import Comment from '@/components/Comment.vue';
 import { useStore } from 'vuex';
-import { computed, ref, watch, onMounted } from 'vue';
+import { computed, ref, onBeforeUnmount, onMounted } from 'vue';
 import { dateToRelative } from '../utils/date';
 import { getImageByName, getUserById } from '@/apis/firebase.js';
 
@@ -74,13 +74,16 @@ const comments = computed(() =>
     (a, b) => a.publishedAt.seconds - b.publishedAt.seconds,
   ),
 );
-console.log({ comments });
 
 onMounted(async () => {
   store.dispatch('comment/getAllComments', post.value.id);
   postImageUrl.value = await getImageByName(post.value.imageName);
   author.value = await getUserById(post.value.author);
   authorAvatarUrl.value = await getImageByName(author.value.avatar);
+});
+
+onBeforeUnmount(() => {
+  store.dispatch('comment/clearComments');
 });
 
 const handleSentComment = () => {

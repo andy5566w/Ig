@@ -16,6 +16,7 @@ import {
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
 import { getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage';
+import { generateUID } from '@/utils/util.js';
 
 // For account
 export async function testFirebase(collectionName, id) {
@@ -76,7 +77,7 @@ export const getAllImages = async () => {
 };
 
 export const uploadImage = async (file) => {
-  const fileName = `${file.name.split('.')[0]}${Math.random().toString(16).slice(2)}.${file.name.split('.')[1]}`;
+  const fileName = `${file.name.split('.')[0]}${generateUID(20)}.${file.name.split('.')[1]}`;
   const storageRef = ref(storage, 'images/' + fileName);
   await uploadBytes(storageRef, file);
   return fileName;
@@ -92,7 +93,7 @@ export const addPostIntoFirebase = async ({ imageName, description }) => {
     favors: [],
     comments: [],
     publishedAt: Timestamp.fromDate(new Date()),
-    id: Math.random().toString(16).slice(2),
+    id: generateUID(20),
   };
   const docRef = doc(db, 'posts', docPayload.id);
   await setDoc(docRef, docPayload);
@@ -158,6 +159,7 @@ export const updateUser = async (data) => {
 // for comment
 export const addCommentIntoFirebase = async ({ comment, postId }) => {
   const docPayload = {
+    id: generateUID(20),
     comment,
     postId,
     author: store.state.user.userInfo.uid,

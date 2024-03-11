@@ -42,5 +42,8 @@ export const comment = {
         posts.map((p) => p.data()),
       );
     },
+    clearComments({ state }) {
+      state.comments = [];
+    },
   },
 };

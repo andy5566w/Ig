@@ -10,7 +10,7 @@
     />
     <div class="postInfo">
       <div class="postMeta">
-        <TheAvatar :src="author?.avatarUrl" />
+        <TheAvatar :src="author?.avatar" />
         <span>{{ author?.name }}</span>
         <span class="postPubDate">{{
           dateToRelative(publishedAt?.seconds * 1000)
@@ -76,9 +76,6 @@ watch(
   () => props.author,
   async (authorId) => {
     author.value = await getUserById(authorId);
-    if (author.value.avatar) {
-      author.value.avatarUrl = await getImageByName(author.value.avatar);
-    }
   },
   { immediate: true },
 );

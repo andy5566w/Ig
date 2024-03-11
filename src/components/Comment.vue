@@ -1,6 +1,6 @@
 <template>
   <div class="comment">
-    <TheAvatar :src="avatarUrl" />
+    <TheAvatar :src="author?.avatar" />
     <span class="user">{{ author?.name }}</span>
     <span class="commentDate">{{
       dateToRelative(props.publishedAt.seconds * 1000)
@@ -22,11 +22,9 @@ const props = defineProps({
 });
 
 const author = ref('');
-const avatarUrl = ref('');
 
 onMounted(async () => {
   author.value = await getUserById(props.author);
-  avatarUrl.value = await getImageByName(author.value.avatar);
 });
 </script>
 <style scoped>

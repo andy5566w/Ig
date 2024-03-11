@@ -1,10 +1,13 @@
 <template>
-  <img :src="src || defaultAvatar" alt="avatar" class="avatar" />
+  <img :src="imgUrl" alt="avatar" class="avatar" />
 </template>
 
 <script setup>
-import defaultAvatar from '../assets/avatarDefault.png';
-defineProps({
+import defaultAvatar from '@/assets/avatarDefault.png';
+import { getImageByName } from '@/apis/firebase.js';
+import { ref, watch } from 'vue';
+
+const props = defineProps({
   src: String,
   width: {
     type: [String, Number],
@@ -15,6 +18,19 @@ defineProps({
     default: 34,
   },
 });
+const imgUrl = ref(defaultAvatar);
+
+watch(
+  () => props.src,
+  async (src) => {
+    if (src && !src.match('https://firebasestorage')) {
+      imgUrl.value = await getImageByName(src);
+      return;
+    }
+    imgUrl.value = src;
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped>

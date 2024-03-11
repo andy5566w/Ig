@@ -4,7 +4,7 @@
       <img class="postImage" :src="postImageUrl" alt="postImage" />
       <div class="postMeta">
         <div class="author">
-          <TheAvatar :src="authorAvatarUrl" />
+          <TheAvatar :src="author?.avatar" />
           <span>{{ post.user?.name }}</span>
         </div>
         <pre class="postDesc"
@@ -59,7 +59,6 @@ import { getImageByName, getUserById } from '@/apis/firebase.js';
 
 const content = ref('');
 const store = useStore();
-const authorAvatarUrl = ref('');
 const postImageUrl = ref('');
 const author = ref('');
 const post = computed(() => store.getters['post/getters_current_post']);
@@ -79,7 +78,6 @@ onMounted(async () => {
   store.dispatch('comment/getAllComments', post.value.id);
   postImageUrl.value = await getImageByName(post.value.imageName);
   author.value = await getUserById(post.value.author);
-  authorAvatarUrl.value = await getImageByName(author.value.avatar);
 });
 
 onBeforeUnmount(() => {

@@ -40,4 +40,5 @@ onAuthStateChanged(auth, (userCredential) => {
     ...userCredential?.reloadUserInfo,
     uid: userCredential.uid,
   });
+  store.dispatch('user/getUserByUserId', userCredential.uid);
 });

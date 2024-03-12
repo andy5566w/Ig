@@ -26,9 +26,12 @@
       </div>
     </div>
     <div class="tabContent">
-      <post-list>
+      <post-list v-if="posts.length > 0">
         <post-item v-for="post in posts" v-bind="post" :key="post.id" />
       </post-list>
+      <div v-else class="no-data">
+        There is no data here; let's retrieve some posts you like.
+      </div>
     </div>
   </div>
   <post-details v-if="showPostDetails" />
@@ -196,6 +199,12 @@ watch(currentTab, async () => {
   text-align: center;
   font-weight: 600;
   margin-bottom: 32px;
+}
+
+.no-data {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
 }
 
 .posts {

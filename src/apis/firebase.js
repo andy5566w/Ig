@@ -110,10 +110,16 @@ export const getSinglePostById = async (id) => {
 };
 
 export const getPostsByField = async ({ field, value, opStr }) => {
-  const targetCollection = collection(db, 'posts');
-  const q = query(targetCollection, where(field, opStr, value));
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs;
+  try {
+    const targetCollection = collection(db, 'posts');
+    const q = query(targetCollection, where(field, opStr, value));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs;
+  } catch (err) {
+    if (err.name === 'FirebaseError') {
+      return [];
+    }
+  }
 };
 
 export const getAllPostsFromCollection = async (collectionName) => {

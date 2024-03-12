@@ -56,11 +56,11 @@ const props = defineProps({
 });
 
 const likedByMe = computed(() => {
-  return props.likes.includes(store.state.user?.userInfo?.uid);
+  return (props.likes || []).includes(store.state.user?.userInfo?.uid);
 });
 
 const favoredByMe = computed(() => {
-  return props.favors.includes(store.state.user?.userInfo?.uid);
+  return (props.favors || []).includes(store.state.user?.userInfo?.uid);
 });
 
 watch(

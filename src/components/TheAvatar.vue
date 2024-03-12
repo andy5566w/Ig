@@ -23,7 +23,7 @@ const imgUrl = ref(defaultAvatar);
 watch(
   () => props.src,
   async (src) => {
-    if (src && !src.match('https://firebasestorage')) {
+    if (src && !src.match('https://firebasestorage') && !src.match('blob:')) {
       imgUrl.value = await getImageByName(src);
       return;
     }

@@ -54,6 +54,7 @@ watch(
       profileData.intro = intro;
     }
   },
+  { immediate: true },
 );
 
 async function handleChange(e) {

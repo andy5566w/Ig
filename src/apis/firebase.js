@@ -109,6 +109,13 @@ export const getSinglePostById = async (id) => {
   return postSnap.data();
 };
 
+export const getPostsByField = async ({ field, value, opStr }) => {
+  const targetCollection = collection(db, 'posts');
+  const q = query(targetCollection, where(field, opStr, value));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs;
+};
+
 export const getAllPostsFromCollection = async (collectionName) => {
   const querySnapshot = await getDocs(collection(db, collectionName));
   const posts = querySnapshot.docs.map((doc) => {

@@ -4,43 +4,25 @@
     <div class="changeAvatar">
       <TheAvatar :width="48" :height="48" :src="profileData.avatar" />
       <TheButton>change avatar</TheButton>
-      <input type="file" class="inputFile" @change="uploadAvatar" />
+      <input type="file" class="inputFile" @change="handleChange" />
     </div>
     <form class="profileForm" @submit.prevent="updateUser">
-      <label for="username">name：</label>
-      <input type="text" v-model="profileData.username" />
-      <label for="name">nick name：</label>
+      <label for="name">name：</label>
       <input type="text" v-model="profileData.name" />
       <label for="intro">profile：</label>
-      <textarea rows="12" v-model="profileData.intro"></textarea>
-      <label for="mobilePhone">mobile：</label>
-      <input type="text" v-model="profileData.mobilePhone" />
-      <label>gender：</label>
-      <div class="genderRadios">
-        <input
-          type="radio"
-          name="gender"
-          id="M"
-          value="M"
-          v-model="profileData.gender"
-        />
-        male
-        <input
-          type="radio"
-          name="gender"
-          id="F"
-          value="F"
-          v-model="profileData.gender"
-        />
-        female
-      </div>
-      <label for="website">website：</label>
-      <input type="text" v-model="profileData.website" />
+      <textarea
+        rows="12"
+        v-model="profileData.intro"
+        placeholder="please type something to introduce yourself..."
+      ></textarea>
       <div class="actions">
         <TheButton type="reset" reverse @click.prevent="router.push('/profile')"
           >cancel</TheButton
         >
-        <TheButton type="submit">confirm</TheButton>
+        <TheButton type="submit">
+          <div class="loading" v-if="isLoading"></div>
+          <span v-else>confirm</span>
+        </TheButton>
       </div>
     </form>
   </div>
@@ -48,29 +30,50 @@
 <script setup>
 import TheButton from '../components/TheButton.vue';
 import TheAvatar from '../components/TheAvatar.vue';
-import { computed, reactive } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 const router = useRouter();
-
-const user = computed(() => store.state.user.user);
+const store = useStore();
+const avatarFile = ref(null);
+const isLoading = ref(false);
 const profileData = reactive({
-  avatar: user.value.avatar,
-  username: user.value.username,
-  name: user.value.name,
-  intro: user.value.intro,
-  mobilePhone: user.value.mobilePhone,
-  gender: user.value.gender,
-  website: user.value.website,
+  avatar: '',
+  name: '',
+  intro: '',
 });
 
-async function uploadAvatar(e) {
+watch(
+  () => store.state.user.userDoc,
+  (userDoc) => {
+    if (userDoc.id) {
+      const { avatar, name, intro } = userDoc;
+      profileData.avatar = avatar;
+      profileData.name = name;
+      profileData.intro = intro;
+    }
+  },
+);
+
+async function handleChange(e) {
   const file = e.target.files[0];
+  profileData.avatar = URL.createObjectURL(file);
+  avatarFile.value = file;
 }
 
 async function updateUser() {
-  await store.dispatch('updateUser', profileData);
-  await router.push('/profile');
+  try {
+    isLoading.value = true;
+    await store.dispatch('user/updateUser', {
+      profileData,
+      file: avatarFile.value,
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 <style scoped lang="scss">
@@ -114,6 +117,25 @@ async function updateUser() {
     justify-self: end;
     display: flex;
     gap: 16px;
+  }
+}
+
+.loading {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
 </style>

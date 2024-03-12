@@ -6,6 +6,7 @@ import {
   getUserById,
   updatePost,
   getSinglePostById,
+  uploadImage,
 } from '@/apis/firebase.js';
 import Swal from 'sweetalert2';
 
@@ -100,6 +101,16 @@ export const user = {
         { root: true },
       );
       await Promise.all(promises);
+    },
+    async updateUser({ commit, state }, { file, profileData }) {
+      const fileName = file ? await uploadImage(file) : state.userDoc.avatar;
+      const newUserDoc = {
+        ...state.userDoc,
+        ...profileData,
+        avatar: fileName,
+      };
+      await updateUser(newUserDoc);
+      commit('MUTATION_USER_DOC', newUserDoc);
     },
   },
 };

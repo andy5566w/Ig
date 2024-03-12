@@ -136,6 +136,7 @@ export const addUserIntoFirebase = async ({ id, name, email }) => {
     startAt: Timestamp.fromDate(new Date()),
     likes: [],
     favors: [],
+    intro: '',
   };
   const docRef = doc(db, 'users', id);
   return await setDoc(docRef, docPayload);

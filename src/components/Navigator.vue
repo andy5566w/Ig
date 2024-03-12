@@ -44,7 +44,7 @@ const user = ref({});
 watch(
   () => store.state.user.userInfo,
   (userInfo) => {
-    if (userInfo.uid) {
+    if (userInfo?.uid) {
       handleGetUser(userInfo.uid);
     }
   },

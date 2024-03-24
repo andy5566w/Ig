@@ -13,11 +13,14 @@
       </router-link>
 
       <button @click="handleShowPopup"><the-icon icon="publish" /></button>
-
-      <div class="profileDropDown">
+      <div
+        class="profileDropDown"
+        @mouseenter="isShowPersonalMenu = true"
+        @mouseleave="isShowPersonalMenu = false"
+      >
         <the-avatar :width="42" :height="42" :src="user?.avatar" />
         <div class="dropdownMenu">
-          <ul class="profileMenu">
+          <ul class="profileMenu" :class="{ active: isShowPersonalMenu }">
             <li>
               <router-link to="/profile">personal page</router-link>
             </li>
@@ -40,6 +43,7 @@ import { getUserById } from '@/apis/firebase.js';
 const router = useRouter();
 const store = useStore();
 const user = ref({});
+const isShowPersonalMenu = ref(false);
 
 watch(
   () => store.state.user.userInfo,
@@ -109,6 +113,7 @@ const handleShowPopup = () => {
 
     .profileDropDown {
       position: relative;
+      cursor: pointer;
     }
   }
 }
@@ -124,6 +129,12 @@ const handleShowPopup = () => {
   right: 0;
   display: grid;
   row-gap: 18px;
+  transition: all 0.2s ease-in;
+  visibility: hidden;
+}
+
+.profileMenu.active {
+  visibility: visible;
   transform: translateY(18px);
 }
 

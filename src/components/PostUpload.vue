@@ -7,6 +7,7 @@
           :src="imageObjUrl"
           class="preview"
           alt="imageObjUrl"
+          loading="lazy"
         />
         <TheIcon v-else icon="upload-image" />
         <input

@@ -2,7 +2,8 @@
   <div class="postItem">
     <img
       :src="imageUrl"
-      alt=""
+      alt="postImage"
+      loading="lazy"
       width="100%"
       height="100%"
       @click="$store.dispatch('post/showPostDetails', id)"

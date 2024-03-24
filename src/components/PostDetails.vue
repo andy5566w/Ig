@@ -1,7 +1,12 @@
 <template>
   <TheModal @close="$store.dispatch('post/hidePostDetails')">
     <div class="postDetails">
-      <img class="postImage" :src="postImageUrl" alt="postImage" />
+      <img
+        class="postImage"
+        :src="postImageUrl"
+        alt="postImage"
+        loading="lazy"
+      />
       <div class="postMeta">
         <div class="author">
           <TheAvatar :src="author?.avatar" />

@@ -1,8 +1,13 @@
 <template>
   <div class="loginPage">
-    <img src="../assets/phone.png" alt="" class="phoneImage" />
+    <img
+      src="../assets/phone.png"
+      alt="phone"
+      loading="lazy"
+      class="phoneImage"
+    />
     <div class="loginForm">
-      <img src="../assets/logo.svg" alt="" />
+      <img src="../assets/logo.svg" alt="logo" loading="lazy" />
       <form @submit.prevent id="form">
         <input type="email" placeholder="type your email..." v-model="email" />
         <input

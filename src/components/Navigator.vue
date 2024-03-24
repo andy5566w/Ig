@@ -1,7 +1,7 @@
 <template>
   <nav class="navigator">
     <router-link to="/">
-      <img src="../assets/logo.svg" alt="" />
+      <img src="../assets/logo.svg" alt="" loading="lazy" />
     </router-link>
     <div class="searchInput">
       <input type="text" />

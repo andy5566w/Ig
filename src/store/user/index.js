@@ -18,6 +18,9 @@ export const user = {
       userDoc: {},
     };
   },
+  getters: {
+    isAuthor: (state) => (authId) => state.userDoc.id === authId,
+  },
   mutations: {
     MUTATION_USER(state, userInfo) {
       state.userInfo = userInfo;

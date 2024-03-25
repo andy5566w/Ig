@@ -3,6 +3,7 @@ import {
   getAllCommentsByPostId,
   getSingleComment,
   updatePost,
+  updateComment,
 } from '@/apis/firebase.js';
 
 export const comment = {
@@ -41,6 +42,15 @@ export const comment = {
         'MUTATION_COMMENTS',
         posts.map((p) => p.data()),
       );
+    },
+    async updateComment({ state }, { comment, commentId }) {
+      const source = state.comments.find(({ id }) => id === commentId);
+      if (!source) {
+        console.log(`can't find target comment by id (${commentId})`);
+        return;
+      }
+      source.comment = comment;
+      await updateComment(source);
     },
     clearComments({ state }) {
       state.comments = [];

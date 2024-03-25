@@ -199,3 +199,8 @@ export const getAllCommentsByPostId = async (postId) => {
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs;
 };
+
+export const updateComment = async (data) => {
+  const docRef = doc(db, 'comments', data.id);
+  await setDoc(docRef, data);
+};

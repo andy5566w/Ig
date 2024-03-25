@@ -4,7 +4,7 @@
       <img src="../assets/logo.svg" alt="" loading="lazy" />
     </router-link>
     <div class="searchInput">
-      <input type="text" />
+      <input type="text" @keydown.enter="handleSearchPost" />
       <the-icon icon="search" />
     </div>
     <div class="navigator__items">
@@ -66,6 +66,16 @@ const handleLogout = async () => {
 
 const handleShowPopup = () => {
   store.commit('post/CHANGE_SHOW_POPUP', true);
+};
+
+const handleSearchPost = (event) => {
+  const term = event.target.value;
+  router.push({
+    name: 'search',
+    query: {
+      term,
+    },
+  });
 };
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <h2 class="title">result:{{ terms }}</h2>
+  <h2 class="title">Result: {{ terms }}</h2>
   <post-list>
     <post-item
       v-for="post in searchResults"
@@ -29,4 +29,8 @@ onMounted(() => {
 });
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.title {
+  margin-bottom: 1rem;
+}
+</style>

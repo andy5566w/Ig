@@ -45,6 +45,11 @@ const store = useStore();
 const user = ref({});
 const isShowPersonalMenu = ref(false);
 
+const handleGetUser = async (userId) => {
+  user.value = await getUserById(userId);
+  store.dispatch('user/getUserByUserId', userId);
+};
+
 watch(
   () => store.state.user.userInfo,
   (userInfo) => {
@@ -54,11 +59,6 @@ watch(
   },
   { immediate: true },
 );
-
-const handleGetUser = async (userId) => {
-  user.value = await getUserById(userId);
-  store.dispatch('user/getUserByUserId', userId);
-};
 
 const handleLogout = async () => {
   await logout();

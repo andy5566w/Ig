@@ -7,7 +7,8 @@
 <style scoped>
 .postList {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
+  justify-content: center;
   gap: 48px;
 }
 </style>

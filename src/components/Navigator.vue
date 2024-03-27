@@ -7,7 +7,7 @@
       <input type="text" @keydown.enter="handleSearchPost" />
       <the-icon icon="search" />
     </div>
-    <div class="navigator__items">
+    <div class="navigator__items" v-if="!store.getters['user/isGuest']">
       <router-link to="/">
         <the-icon icon="home" />
       </router-link>

@@ -3,7 +3,6 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 import store from '@/store/index.js';
-import router from '@/route/routes.js';
 
 export const getJwtToken = () => localStorage.getItem('jwt_token');
 export const setJwtToken = (token) => localStorage.setItem('jwt_token', token);
@@ -33,7 +32,6 @@ export const logout = async () => {
 
 onAuthStateChanged(auth, (userCredential) => {
   if (!userCredential) {
-    router.push({ name: 'login' });
     return;
   }
   store.commit('user/MUTATION_USER', {

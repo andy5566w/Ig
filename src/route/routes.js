@@ -4,6 +4,7 @@ import Profile from '../pages/Profile.vue';
 import ProfileEditting from '../pages/ProfileEditting.vue';
 import Login from '../pages/Login.vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import store from '@/store/index.js';
 
 const routes = [
   { path: '/', name: 'home', component: Home },
@@ -16,5 +17,14 @@ const routes = [
 const router = createRouter({
   routes,
   history: createWebHistory(),
+});
+
+router.beforeEach((to, form) => {
+  if (
+    store.getters['user/isGuest'] &&
+    !['search', 'home', 'login'].includes(to.name)
+  ) {
+    return { name: 'home' };
+  }
 });
 export default router;

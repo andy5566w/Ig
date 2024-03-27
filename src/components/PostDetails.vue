@@ -42,12 +42,19 @@
           <input
             type="text"
             name="comment"
+            :disabled="store.getters['user/isGuest']"
             v-model="content"
             id=""
             class="commentInput"
             placeholder="leave some comment..."
           />
-          <button @click="handleSentComment" class="commentPubBtn">sent</button>
+          <button
+            :disabled="store.getters['user/isGuest']"
+            @click="handleSentComment"
+            class="commentPubBtn"
+          >
+            sent
+          </button>
         </div>
       </div>
     </div>

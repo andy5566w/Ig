@@ -9,6 +9,7 @@ import {
   uploadImage,
 } from '@/apis/firebase.js';
 import Swal from 'sweetalert2';
+import router from '@/route/routes.js';
 
 export const user = {
   namespaced: true,
@@ -20,6 +21,7 @@ export const user = {
   },
   getters: {
     isAuthor: (state) => (authId) => state.userDoc.id === authId,
+    isGuest: (state) => !state.userInfo,
   },
   mutations: {
     MUTATION_USER(state, userInfo) {
@@ -63,7 +65,11 @@ export const user = {
       const user = await getUserById(userId);
       commit('MUTATION_USER_DOC', user);
     },
-    async likePost({ dispatch, rootState, state }, { postId }) {
+    async likePost({ dispatch, rootState, rootGetters, state }, { postId }) {
+      if (rootGetters['user/isGuest']) {
+        showLogin();
+        return;
+      }
       const user = state.userDoc;
       const post = await getSinglePostById(postId);
       const userIndex = user.likes.findIndex((id) => id === postId);
@@ -84,7 +90,11 @@ export const user = {
       );
       await Promise.all(promises);
     },
-    async addToFavors({ dispatch, rootState, state }, { postId }) {
+    async addToFavors({ dispatch, rootState, rootGetters, state }, { postId }) {
+      if (rootGetters['user/isGuest']) {
+        showLogin();
+        return;
+      }
       const user = state.userDoc;
       const post = await getSinglePostById(postId);
       const userIndex = user.favors.findIndex((id) => id === postId);
@@ -117,3 +127,21 @@ export const user = {
     },
   },
 };
+
+function showLogin() {
+  Swal.fire({
+    title: 'Warning!',
+    text: 'You need to log in to proceed',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Go to login page',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      router.push({
+        name: 'login',
+      });
+    }
+  });
+}

@@ -13,11 +13,18 @@
   <footer class="footer" :class="{ inside: $route.name === 'login' }">
     &copy; All Rights Reserved.
   </footer>
+  <post-upload v-if="showPostUpload" />
 </template>
 
 <script setup>
 import Navigator from './components/Navigator.vue';
 import TheLayout from './components/TheLayout.vue';
+import PostUpload from '@/components/PostUpload.vue';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
+const showPostUpload = computed(() => store.state.post.showPopup);
 </script>
 
 <style scoped lang="scss">

@@ -52,6 +52,7 @@ watch(
       handleGetUser(userInfo.uid);
     }
   },
+  { immediate: true },
 );
 
 const handleGetUser = async (userId) => {

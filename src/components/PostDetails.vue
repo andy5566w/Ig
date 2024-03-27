@@ -25,6 +25,7 @@
         </div>
         <div class="actions">
           <PostActions
+            v-if="isDisableAction"
             :likes="post.likes"
             :comments="post.comments"
             :favors="post.favors"
@@ -61,9 +62,11 @@ import { useStore } from 'vuex';
 import { computed, ref, onBeforeUnmount, onMounted } from 'vue';
 import { dateToRelative } from '../utils/date';
 import { getImageByName, getUserById } from '@/apis/firebase.js';
+import { useRoute } from 'vue-router';
 
 const content = ref('');
 const store = useStore();
+const route = useRoute();
 const postImageUrl = ref('');
 const author = ref('');
 const post = computed(() => store.getters['post/getters_current_post']);
@@ -78,6 +81,7 @@ const comments = computed(() =>
     (a, b) => a.publishedAt.seconds - b.publishedAt.seconds,
   ),
 );
+const isDisableAction = computed(() => route.name !== 'profile');
 
 onMounted(async () => {
   store.dispatch('comment/getAllComments', post.value.id);

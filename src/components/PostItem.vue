@@ -17,6 +17,7 @@
           dateToRelative(publishedAt?.seconds * 1000)
         }}</span>
         <PostActions
+          v-if="isDisableAction"
           :likes="props.likes"
           :comments="props.comments"
           :favors="props.favors"
@@ -41,10 +42,12 @@ import { dateToRelative } from '../utils/date';
 import { watch, ref, computed } from 'vue';
 import { getImageByName, getUserById } from '@/apis/firebase.js';
 import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
 
 const imageUrl = ref('');
 const author = ref({});
 const store = useStore();
+const route = useRoute();
 const props = defineProps({
   imageName: String,
   author: String,
@@ -63,6 +66,8 @@ const likedByMe = computed(() => {
 const favoredByMe = computed(() => {
   return (props.favors || []).includes(store.state.user?.userInfo?.uid);
 });
+
+const isDisableAction = computed(() => route.name !== 'profile');
 
 watch(
   () => props.imageName,
